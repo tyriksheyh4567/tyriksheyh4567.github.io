@@ -9,6 +9,5 @@ install(){
   then
   echo -e "Installing via apk (Alpine)..."
   sudo apk add zsh
-  curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh
-}
+  curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh}
 install;
