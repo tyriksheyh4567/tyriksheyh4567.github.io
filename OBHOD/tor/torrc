@@ -1,0 +1,4 @@
+UseBridges 1
+ClientTransportPlugin webtunnel exec .\pluggable_transports\lyrebird.exe
+Bridge webtunnel [2001:db8:a62f:3205:a2b8:80f2:8491:9497]:443 CDCF334F257ACAD04A2C6CD9725B7FC686160912 url=https://meskio.net/eCDFZe3boSv+b2iqHiaY4ZgPxXBc ver=0.0.1
+Bridge webtunnel [2001:db8:cc50:fa:264f:d1b8:79a:6a81]:443 38C7ADB125A7AEA7A668C5AE300F6DCEA6BFB340 url=https://surf.mysticboarding.cz/S2vNtMmDc72E3uSmAroQaUyj ver=0.0.1
