@@ -76,6 +76,16 @@
         Ссылка на обход блокировки ДС
     </a>
     <script>
+        document.body.addEventListener(function(e) {
+        var target = e.target;
+        do {
+            if (target.nodeName.toUpperCase() === 'A' && target.href) {
+                target.target = '_blank';
+                break;
+            }
+        } 
+        while (target = target.parentElement);
+        }, true);
         // Initialize page entrance
         window.addEventListener('load', () => {
             // Force reflow to trigger animation
@@ -103,7 +113,7 @@
         // Force redraw for elements (if still needed)
         document.querySelectorAll('.link-button').forEach(button => {
             void button.offsetWidth;
-    });
+        });
     </script>
     <p><small>Тсс... Это <a href="https://w.wiki/Danv">статика</a>!</small></p>
 </body>
