@@ -25,6 +25,7 @@
             align-items: center;
             justify-content: center;
             background-color: rgb(139, 182, 204);
+            will-change: opacity;
         }
         /* Button styling with transitions */
         .link-button {
@@ -35,7 +36,6 @@
             text-decoration: none;
             border-radius: 5px;
             transition: all 0.3s ease;
-            font-family: Arial, sans-serif;
             border: none;
             cursor: pointer;
         }
@@ -51,6 +51,49 @@
             transform: scale(0.95);
         }
     </style>
+    <!-- Add this to all pages -->
+    <script>
+        // Intercept link clicks
+        document.addEventListener('click', function(e) {
+        if (e.target.tagName === 'A' && !e.target.target) {
+            e.preventDefault();
+            const url = e.target.href;
+            
+            // Fade out current page
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease';
+        
+            // Load new page after animation
+            setTimeout(() => {
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                const newContent = new DOMParser()
+                    .parseFromString(html, 'text/html')
+                    .querySelector('body').innerHTML;
+        
+                // Update content
+                document.body.innerHTML = newContent;
+                
+                // Fade in new content
+                document.body.style.opacity = '0';
+                requestAnimationFrame(() => {
+                    document.body.style.transition = 'opacity 0.3s ease';
+                    document.body.style.opacity = '1';
+                });
+        
+                // Update browser history
+                history.pushState(null, null, url);
+                });
+            }, 300);
+        }
+        });
+        
+        // Handle browser back/forward
+        window.addEventListener('popstate', function() {
+        location.reload();
+        });
+    </script>
 </head>
     <h1>You won't be redirected after a few second ago... :)))</h1>
     <a href="https://tyriksheyh4567.github.io/OBHOD/" class="link-button">

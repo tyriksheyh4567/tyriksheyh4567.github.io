@@ -21,6 +21,7 @@
             align-items: center;
             justify-content: center;
             background-color: rgb(139, 182, 204);
+            will-change: opacity;
         }
 
         .container {
@@ -68,6 +69,48 @@
             background-color: rgb(211, 211, 211);
         }
     </style>
+    <script>
+        // Intercept link clicks
+        document.addEventListener('click', function(e) {
+        if (e.target.tagName === 'A' && !e.target.target) {
+            e.preventDefault();
+            const url = e.target.href;
+            
+            // Fade out current page
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease';
+        
+            // Load new page after animation
+            setTimeout(() => {
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                const newContent = new DOMParser()
+                    .parseFromString(html, 'text/html')
+                    .querySelector('body').innerHTML;
+        
+                // Update content
+                document.body.innerHTML = newContent;
+                
+                // Fade in new content
+                document.body.style.opacity = '0';
+                requestAnimationFrame(() => {
+                    document.body.style.transition = 'opacity 0.3s ease';
+                    document.body.style.opacity = '1';
+                });
+        
+                // Update browser history
+                history.pushState(null, null, url);
+                });
+            }, 300);
+        }
+        });
+        
+        // Handle browser back/forward
+        window.addEventListener('popstate', function() {
+        location.reload();
+        });
+    </script>
 </head>
 <body>
     <h1>Запуск ДС без проблем*</h1>
