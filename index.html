@@ -12,8 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
     <style>
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         * {
             font-family: "Montserrat", sans-serif;
@@ -30,9 +30,8 @@
             justify-content: center;
             background-color: rgb(139, 182, 204);
             will-change: opacity;
-            animation: fadeIn 0.5s ease-in;
             opacity: 0;
-            animation-fill-mode: forwards;
+            animation: fadeIn 0.5s ease forwards;
         }
         /* Button styling with transitions */
         .link-button {
@@ -60,8 +59,31 @@
     </style>
 </head>
     <h1>You won't be redirected after a few second ago... :)))</h1>
-    <a href="https://tyriksheyh4567.github.io/OBHOD/" class="link-button">
+    <a href="OBHOD/index.html" class="link-button">
         Ссылка на обход блокировки ДС
     </a>
+    <script>
+        // Force redraw for elements with delay
+        document.querySelectorAll('.link-button').forEach(button => {
+            // Trigger reflow to enable animations
+            void button.offsetWidth;
+        });
+
+        // Handle page exit
+        document.addEventListener('click', function(e) {
+        if (e.target.closest('a')) {
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => {
+                window.location = e.target.closest('a').href;
+            }, 300);
+        }
+    });
+    // Initialize page entrance
+    window.addEventListener('load', () => {
+        document.body.style.opacity = '1';
+    });
+    </script>
 </body>
 </html>

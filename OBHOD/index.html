@@ -13,8 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
     <style>
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         /* CSS for centering and image scaling */
         body {
@@ -26,9 +26,8 @@
             justify-content: center;
             background-color: rgb(139, 182, 204);
             will-change: opacity;
-            animation: fadeIn 0.5s ease-in;
             opacity: 0;
-            animation-fill-mode: forwards;
+            animation: fadeIn 0.5s ease forwards;
         }
 
         .container {
@@ -77,46 +76,27 @@
         }
     </style>
     <script>
-        // Intercept link clicks
+        // Force redraw for elements with delay
+        document.querySelectorAll('.link-button').forEach(button => {
+            // Trigger reflow to enable animations
+            void button.offsetWidth;
+        });
+
+        // Handle page exit
         document.addEventListener('click', function(e) {
-        if (e.target.tagName === 'A' && !e.target.target) {
+        if (e.target.closest('a')) {
             e.preventDefault();
-            const url = e.target.href;
-            
-            // Fade out current page
             document.body.style.opacity = '0';
             document.body.style.transition = 'opacity 0.3s ease';
-        
-            // Load new page after animation
             setTimeout(() => {
-            fetch(url)
-                .then(response => response.text())
-                .then(html => {
-                const newContent = new DOMParser()
-                    .parseFromString(html, 'text/html')
-                    .querySelector('body').innerHTML;
-        
-                // Update content
-                document.body.innerHTML = newContent;
-                
-                // Fade in new content
-                document.body.style.opacity = '0';
-                requestAnimationFrame(() => {
-                    document.body.style.transition = 'opacity 0.3s ease';
-                    document.body.style.opacity = '1';
-                });
-        
-                // Update browser history
-                history.pushState(null, null, url);
-                });
+                window.location = e.target.closest('a').href;
             }, 300);
         }
-        });
-        
-        // Handle browser back/forward
-        window.addEventListener('popstate', function() {
-        location.reload();
-        });
+    });
+    // Initialize page entrance
+    window.addEventListener('load', () => {
+        document.body.style.opacity = '1';
+    });
     </script>
 </head>
 <body>
@@ -151,5 +131,6 @@
     <p>*Автор <b>НЕ</b> призывает вас пользоваться Discord и обходить его блокировку на территории РФ.</p>
     <p>**Окно терминала может отличаться от моего, это неважно.</p>
     <p>***Сайт с репозиторием заблокирован в РФ <a href="https://roskomsvoboda.org/ru/cards/card/tspu-blokrovki-runet/">(ТСПУ)</a>.</p>
+    <p><a href="../index.html">В корень сайта</a></p>
 </body>
 </html>
