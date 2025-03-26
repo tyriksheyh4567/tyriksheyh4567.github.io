@@ -126,6 +126,16 @@
     <p>***Сайт с репозиторием заблокирован в РФ <a href="https://roskomsvoboda.org/ru/cards/card/tspu-blokrovki-runet/" target="_blank">(ТСПУ)</a>.</p>
     <p><a href="https://tyriksheyh4567.github.io/">В корень сайта</a></p>
     <script>
+        document.body.addEventListener(function(e) {
+        var target = e.target;
+        do {
+            if (target.nodeName.toUpperCase() === 'A' && target.href) {
+                target.target = '_blank';
+                break;
+            }
+        } 
+        while (target = target.parentElement);
+        }, true);
         // Initialize page entrance
         window.addEventListener('load', () => {
             // Force reflow to trigger animation
