@@ -7,5 +7,6 @@
 git clone https://github.com/tyriksheyh4567/tyriksheyh4567.github.io.git
 cd OBHOD
 ```
+Дальше просто следуйте инструкциям на сайте: https://tyriksheyh4567.github.io/OBHOD
 ### Либо просто перейти на сайт и скачать архив.
 Сайт: https://tyriksheyh4567.github.io/OBHOD
