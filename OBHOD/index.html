@@ -12,9 +12,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
     <style>
+        @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(20px); }
+        }
+
+        /* Page entrance animation */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Animation classes */
+        .page-entrance {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .page-exit {
+            animation: fadeOut 0.3s ease forwards;
         }
         /* CSS for centering and image scaling */
         body {
@@ -27,7 +42,8 @@
             background-color: rgb(139, 182, 204);
             will-change: opacity;
             opacity: 0;
-            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(0);
         }
 
         .container {
@@ -75,29 +91,6 @@
             background-color: rgb(211, 211, 211);
         }
     </style>
-    <script>
-        // Force redraw for elements with delay
-        document.querySelectorAll('.link-button').forEach(button => {
-            // Trigger reflow to enable animations
-            void button.offsetWidth;
-        });
-
-        // Handle page exit
-        document.addEventListener('click', function(e) {
-        if (e.target.closest('a')) {
-            e.preventDefault();
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => {
-                window.location = e.target.closest('a').href;
-            }, 300);
-        }
-    });
-    // Initialize page entrance
-    window.addEventListener('load', () => {
-        document.body.style.opacity = '1';
-    });
-    </script>
 </head>
 <body>
     <h1>Запуск ДС без проблем*</h1>
@@ -132,5 +125,35 @@
     <p>**Окно терминала может отличаться от моего, это неважно.</p>
     <p>***Сайт с репозиторием заблокирован в РФ <a href="https://roskomsvoboda.org/ru/cards/card/tspu-blokrovki-runet/">(ТСПУ)</a>.</p>
     <p><a href="https://tyriksheyh4567.github.io/">В корень сайта</a></p>
+    <script>
+        // Initialize page entrance
+        window.addEventListener('load', () => {
+            // Force reflow to trigger animation
+            void document.body.offsetWidth;
+            document.body.classList.add('page-entrance');
+        });
+
+        // Handle page exit
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('a')) {
+                e.preventDefault();
+                const link = e.target.closest('a');
+                
+                // Trigger exit animation
+                document.body.classList.remove('page-entrance');
+                document.body.classList.add('page-exit');
+                
+                // Navigate after animation completes
+                setTimeout(() => {
+                    window.location = link.href;
+                }, 300); // Matches animation duration (0.3s)
+            }
+        });
+
+        // Force redraw for elements (if still needed)
+        document.querySelectorAll('.link-button').forEach(button => {
+            void button.offsetWidth;
+    });
+    </script>
 </body>
 </html>

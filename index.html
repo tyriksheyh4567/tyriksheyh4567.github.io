@@ -57,32 +57,40 @@
             transform: scale(0.95);
         }
     </style>
+    
 </head>
     <h1>You won't be redirected after a few second ago... :)))</h1>
     <a href="https://tyriksheyh4567.github.io/OBHOD/" class="link-button">
         Ссылка на обход блокировки ДС
     </a>
     <script>
-        // Force redraw for elements with delay
-        document.querySelectorAll('.link-button').forEach(button => {
-            // Trigger reflow to enable animations
-            void button.offsetWidth;
+        // Initialize page entrance
+        window.addEventListener('load', () => {
+            // Force reflow to trigger animation
+            void document.body.offsetWidth;
+            document.body.classList.add('page-entrance');
         });
 
         // Handle page exit
         document.addEventListener('click', function(e) {
-        if (e.target.closest('a')) {
-            e.preventDefault();
-            document.body.style.opacity = '0';
-            document.body.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => {
-                window.location = e.target.closest('a').href;
-            }, 300);
-        }
-    });
-    // Initialize page entrance
-    window.addEventListener('load', () => {
-        document.body.style.opacity = '1';
+            if (e.target.closest('a')) {
+                e.preventDefault();
+                const link = e.target.closest('a');
+                
+                // Trigger exit animation
+                document.body.classList.remove('page-entrance');
+                document.body.classList.add('page-exit');
+                
+                // Navigate after animation completes
+                setTimeout(() => {
+                    window.location = link.href;
+                }, 300); // Matches animation duration (0.3s)
+            }
+        });
+
+        // Force redraw for elements (if still needed)
+        document.querySelectorAll('.link-button').forEach(button => {
+            void button.offsetWidth;
     });
     </script>
 </body>
