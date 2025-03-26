@@ -40,8 +40,7 @@
             align-items: center;
             justify-content: center;
             background-color: rgb(139, 182, 204);
-            /* Fixed: Set opacity to 1 by default so content is visible */
-            opacity: 1;
+            opacity: 0;
             transform: translateY(0);
         }
 
@@ -133,17 +132,7 @@
     <p>***Сайт с репозиторием заблокирован в РФ <a href="https://roskomsvoboda.org/ru/cards/card/tspu-blokrovki-runet/" target="_blank">(ТСПУ)</a>.</p>
     <p><a href="https://tyriksheyh4567.github.io/">В корень сайта</a></p>
     <script>
-        // Fixed: Corrected event listener syntax
-        document.addEventListener('click', function(e) {
-            var target = e.target;
-            do {
-                if (target.nodeName.toUpperCase() === 'A' && target.href) {
-                    target.target = '_blank';
-                    break;
-                }
-            } 
-            while (target = target.parentElement);
-        }, true);
+        
         
         // Initialize page entrance
         window.addEventListener('load', () => {
