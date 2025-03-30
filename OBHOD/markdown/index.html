@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+    Static markdown document viewer.
+    Markdown renderer: remarkable
+-->
+
+<head>
+    <title>Discord Unblock Guide</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.7.1/remarkable.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        main {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 80%;
+            max-width: 900px;
+        }
+        
+        #content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        #title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        #toc-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 15px 0;
+            color: #2c3e50;
+        }
+        
+        #toc {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        #toc a {
+            display: block;
+            margin: 5px 0;
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        #toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .toc-level-0 { margin-left: 0; }
+        .toc-level-1 { margin-left: 15px; }
+        .toc-level-2 { margin-left: 30px; }
+        .toc-level-3 { margin-left: 45px; }
+        .toc-level-4 { margin-left: 60px; }
+        
+        #render {
+            line-height: 1.6;
+        }
+        
+        #render h1, #render h2, #render h3 {
+            color: #2c3e50;
+        }
+        
+        #render a {
+            color: #3498db;
+        }
+        
+        #render code {
+            background-color: #f8f8f8;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        
+        #render pre {
+            background-color: #f8f8f8;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        #error {
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #fadbd8;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        #uri {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        #uri-input {
+            width: 70%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        
+        #uri-render-btn {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        #uri-render-btn:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+
+<body>
+<main>
+    <div class="container">
+        <div id="content" style="display:none;">
+            <div id="title"></div>
+            <div id="toc-header" style="display:none;">Table of content</div>
+            <div id="toc"></div>
+            <div id="render"></div>
+        </div>
+        <div id="error"></div>
+        <div id="uri" style="display:none;">
+            <label for="uri-input">Markdown URI:</label>
+            <input id="uri-input" type="text" value="https://tyriksheyh4567.github.io/OBHOD/README.md" />
+            <button type="button" id="uri-render-btn">Render</button>
+        </div>
+    </div>
+</main>
+<script>
+    (() => {
+        const promiseWrap = (func, options={rejectNull: false}) => new Promise((resolve, reject) => {
+            const { rejectNull } = options;
+            let result;
+            try {
+                result = func();
+            } catch(e) {
+                return reject(e);
+            }
+            if (rejectNull && !result) reject('Expected promise result is null');
+            else resolve(result);
+        });
+
+        const selectElement = (selector) => promiseWrap(() => document.querySelector(selector), {rejectNull: true});
+
+        const changeHtml = (selector, text) => selectElement(selector).then(elem => elem.innerHTML = text);
+
+        const createElement = (containerSelector, elementId, tagName='div', attributes={}, innerHtml='') => selectElement(containerSelector)
+            .then(elem => {
+                const element = document.createElement(tagName);
+                element.id = elementId;
+                elem.appendChild(element);
+                Object.keys(attributes)
+                    .filter(k => attributes.hasOwnProperty(k))
+                    .forEach(k => element.setAttribute(k, attributes[k]));
+                element.innerHTML = innerHtml;
+            });
+
+        const toggleDisplay = (selector, displayMode='block') => selectElement(selector)
+            .then(elem => elem.style.display = elem.style.display === 'none' ? displayMode : 'none');
+
+        const showError = (message) => {
+            selectElement('#error').then(elem => {
+                elem.textContent = message;
+                elem.style.display = 'block';
+            });
+        };
+
+        const buildToc = (contentSelector, tocSelector, options={headings: ['h1', 'h2', 'h3', 'h4', 'h5']}) => selectElement(contentSelector).then(element => {
+            const { headings } = options;
+            let currentNode;
+            const nodeIterator = document.createNodeIterator(document.documentElement, NodeFilter.SHOW_ELEMENT,
+                (node) => headings.map(h => node.nodeName.toLowerCase().match(h)).reduce((a, e) => a || e) ?
+                    NodeFilter.FILTER_ACCEPT :
+                    NodeFilter.FILTER_REJECT);
+            let lastNodeId = 0;
+            while(currentNode = nodeIterator.nextNode()) {
+                const nodeId = 'toc-' + lastNodeId++;
+                const nodeRefId = nodeId + '-ref';
+                const currentLevel = headings.indexOf(currentNode.nodeName.toLowerCase());
+                const nodeClass = 'toc-level-'+currentLevel;
+                const nodeContent = currentNode.textContent;
+                const idAttr = document.createAttribute('id');
+                idAttr.value = nodeRefId;
+                currentNode.attributes.setNamedItem(idAttr);
+                createElement(tocSelector, nodeId, 'a', {href: '#'+nodeRefId, class: nodeClass}, nodeContent);
+            }
+        });
+
+        const defaultMarkdownParams = {
+            html: true,
+            breaks: true,
+            linkify: true,
+            typographer: true
+        };
+
+        const fetchMDDefaultOptions = {
+            displayTOC: true,
+            displayTitle: true,
+            remarkableParams: defaultMarkdownParams
+        };
+
+        const fetchMarkdown = (uri, options=fetchMDDefaultOptions) => {
+            const { displayTOC, displayTitle, remarkableParams } = options;
+            const md = new Remarkable('full', remarkableParams);
+            
+            selectElement('#error').then(elem => elem.style.display = 'none');
+            
+            fetch(uri, {
+                method: 'get',
+                mode: 'cors'
+            }).then(value => {
+                if (!value.ok) {
+                    throw new Error(`Failed to fetch markdown: ${value.status} ${value.statusText}`);
+                }
+                toggleDisplay('#content');
+                if (displayTitle) {
+                    const title = uri.split('/').pop().replace('.md', '');
+                    changeHtml('#title', title);
+                }
+                return value.text();
+            }).then(t => {
+                changeHtml('#render', md.render(t));
+                if (displayTOC) {
+                    toggleDisplay('#toc-header');
+                    buildToc('#render','#toc');
+                }
+            }).catch(error => {
+                showError(`Error loading markdown: ${error.message}`);
+            });
+        };
+
+        const pageParams = window.location.search.substring(1)
+            .split('&')
+            .map(p => p.split('='))
+            .reduce((m, [k, v]) => m.set(k, decodeURIComponent(v)), new Map());
+
+        const filename = pageParams.get('f') || pageParams.get('file') || 'https://tyriksheyh4567.github.io/OBHOD/README.md';
+
+        const mdParams = Object.keys(defaultMarkdownParams)
+            .map(k => [k, pageParams.has(k) ? pageParams.get(k) === 'true' : defaultMarkdownParams[k]])
+            .reduce((o, [k, v]) => {o[k] = v; return o;}, {});
+
+        const fetchMarkdownOptions = {
+            displayTOC: pageParams.has('displayTOC') ? pageParams.get('displayTOC') === 'true' : true,
+            displayTitle: pageParams.has('displayTitle') ? pageParams.get('displayTitle') === 'true' : true,
+            remarkableParams: mdParams
+        };
+
+        if (filename) {
+            fetchMarkdown(filename, fetchMarkdownOptions);
+        } else {
+            toggleDisplay('#uri');
+            selectElement('#uri-input').then(elem => elem.value = 'https://tyriksheyh4567.github.io/OBHOD/README.md');
+            selectElement('#uri-render-btn')
+                .then(elem => elem.onclick = () => selectElement('#uri-input')
+                    .then(uriInput => fetchMarkdown(uriInput.value, fetchMarkdownOptions))
+                    .then(()=> toggleDisplay('#uri')));
+        }
+    })();
+</script>
+</body>
+</html>
