@@ -6,65 +6,99 @@
 -->
 
 <head>
-    <title>Discord Unblock Guide</title>
+    <title>Документация Discord</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.7.1/remarkable.min.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-            color: #333;
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(20px); }
+        }
+
+        /* Page entrance animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Animation classes */
+        .page-entrance {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .page-exit {
+            animation: fadeOut 0.3s ease forwards;
         }
         
-        main {
+        body {
+            margin: 0;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            padding: 20px;
+            background-color: rgb(139, 182, 204);
+            opacity: 0;
         }
         
         .container {
-            width: 80%;
-            max-width: 900px;
+            max-width: 800px;
+            width: 90%;
+            padding: 20px;
+            margin: 20px auto;
         }
         
         #content {
             background-color: white;
             padding: 25px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             margin-bottom: 20px;
+            border: 4px dodgerblue solid;
         }
         
         #title {
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 900;
+            font-style: normal;
             font-size: 24px;
-            font-weight: bold;
             margin-bottom: 20px;
-            color: #2c3e50;
             text-align: center;
         }
         
         #toc-header {
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 700;
+            font-style: normal;
             font-size: 18px;
-            font-weight: bold;
             margin: 15px 0;
-            color: #2c3e50;
         }
         
         #toc {
-            background-color: #f9f9f9;
+            background-color: rgb(211, 211, 211);
             padding: 15px;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 20px;
+            border: 4px double gainsboro;
         }
         
         #toc a {
             display: block;
             margin: 5px 0;
-            color: #3498db;
+            color: dodgerblue;
             text-decoration: none;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 500;
         }
         
         #toc a:hover {
@@ -81,42 +115,72 @@
             line-height: 1.6;
         }
         
-        #render h1, #render h2, #render h3 {
-            color: #2c3e50;
+        #render h1 {
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 900;
+            font-style: normal;
+        }
+        
+        #render h2, #render h3, #render h4 {
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 700;
+            font-style: normal;
+        }
+        
+        #render p, #render li {
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 500;
+            font-style: normal;
         }
         
         #render a {
-            color: #3498db;
+            color: dodgerblue;
         }
         
         #render code {
-            background-color: #f8f8f8;
+            background-color: #f0f0f0;
             padding: 2px 5px;
             border-radius: 3px;
             font-family: Consolas, Monaco, 'Andale Mono', monospace;
         }
         
         #render pre {
-            background-color: #f8f8f8;
+            background-color: #f0f0f0;
             padding: 15px;
-            border-radius: 5px;
+            border-radius: 10px;
             overflow-x: auto;
+            border: 2px solid gainsboro;
+        }
+        
+        #render blockquote {
+            border-left: 4px solid dodgerblue;
+            padding-left: 15px;
+            margin-left: 0;
+            color: #555;
+            font-style: italic;
         }
         
         #error {
             color: #e74c3c;
             padding: 15px;
-            border-radius: 5px;
+            border-radius: 10px;
             background-color: #fadbd8;
             margin-bottom: 20px;
             display: none;
+            font-family: "Montserrat", sans-serif;
+            border: 4px double #e74c3c;
         }
         
         #uri {
             background-color: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border: 4px dodgerblue solid;
+            font-family: "Montserrat", sans-serif;
         }
         
         #uri-input {
@@ -125,19 +189,69 @@
             border: 1px solid #ddd;
             border-radius: 4px;
             margin-right: 10px;
+            font-family: "Montserrat", sans-serif;
         }
         
         #uri-render-btn {
             padding: 8px 15px;
-            background-color: #3498db;
+            background-color: dodgerblue;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-family: "Montserrat", sans-serif;
         }
         
         #uri-render-btn:hover {
-            background-color: #2980b9;
+            background-color: #1e90ff;
+        }
+        
+        #render hr {
+            width: 80%;
+            height: 2px;
+            background-color: blue;
+            margin: 20px auto;
+            border: none;
+        }
+        
+        #render table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        
+        #render th, #render td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        
+        #render th {
+            background-color: #f2f2f2;
+        }
+        
+        #render tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        #render img {
+            max-width: 100%;
+            border-radius: 10px;
+            border: 4px dodgerblue solid;
+        }
+        
+        .back-link {
+            margin-top: 20px;
+            text-align: center;
+            font-family: "Montserrat", sans-serif;
+        }
+        
+        .back-link a {
+            color: dodgerblue;
+            text-decoration: none;
+        }
+        
+        .back-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
