@@ -15,7 +15,7 @@ for /d %%i in ("%LOCALAPPDATA%\Discord\app-*") do (
 if "%drover_found%"=="0" (
     echo Файлы Discord Drover не найдены.
     cd drover
-    echo Запуск Tor для скачивания файлов Discord Drover...
+    echo Запуск Discord Drover...
     ".\drover.exe"
     cd ..
 )
