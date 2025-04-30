@@ -16,22 +16,16 @@
             from { opacity: 1; transform: translateY(0); }
             to { opacity: 0; transform: translateY(20px); }
         }
-
-        /* Page entrance animation */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Animation classes */
         .page-entrance {
             animation: fadeIn 0.4s ease forwards;
         }
-
         .page-exit {
             animation: fadeOut 0.3s ease forwards;
         }
-        /* CSS for centering and image scaling */
         body {
             margin: 0;
             min-height: 100vh;
@@ -43,20 +37,18 @@
             opacity: 0;
             transform: translateY(0);
         }
-
         .container {
-            max-width: 800px; /* Adjust as needed */
+            max-width: 800px;
             padding: 20px;
             text-align: center;
         }
-
         .scaled-image {
             border: 4px dodgerblue solid;
-            width: 100%; /* Reduces width to 50% of its container */
-            height: auto; /* Maintains aspect ratio */
+            width: 100%;
+            height: auto;
             display: block;
-            margin: 0 auto; /* Centers the image horizontally */
-            border-radius: 10px; /* Rounded corners */
+            margin: 0 auto;
+            border-radius: 10px;
         }
         li {
             font-family: "Montserrat", sans-serif;
@@ -82,18 +74,18 @@
             font-weight: 500;
             font-style: italic;
         }
-        .no-virus { /*paragraph that says why there's no viruses*/
+        .no-virus {
             border: 4px double gainsboro;
             padding: 10px;
             border-radius: 10px/10px;
             background-color: rgb(211, 211, 211);
         }
         hr {
-            width: 80%;              /* Width of the line */
-            height: 2px;             /* Thickness of the line */
-            background-color: blue;  /* Color of the line */
-            margin: 20px auto;       /* Spacing around the line */
-            border: none;            /* Remove the default border */
+            width: 80%;
+            height: 2px;             
+            background-color: blue;  
+            margin: 20px auto;
+            border: none;
         }
     </style>
 </head>
@@ -132,31 +124,22 @@
     <p>***Сайт с репозиторием заблокирован в РФ <a href="https://roskomsvoboda.org/ru/cards/card/tspu-blokrovki-runet/" target="_blank">(ТСПУ)</a>.</p>
     <p><a href="https://tyriksheyh4567.github.io/">В корень сайта</a></p>
     <script>
-        // Initialize page entrance
         window.addEventListener('load', () => {
-            // Force reflow to trigger animation
             void document.body.offsetWidth;
             document.body.classList.add('page-entrance');
         });
 
-        // Handle page exit
         document.addEventListener('click', function(e) {
             if (e.target.closest('a')) {
                 e.preventDefault();
                 const link = e.target.closest('a');
-                
-                // Trigger exit animation
                 document.body.classList.remove('page-entrance');
                 document.body.classList.add('page-exit');
-                
-                // Navigate after animation completes
                 setTimeout(() => {
                     window.location = link.href;
-                }, 300); // Matches animation duration (0.3s)
+                }, 300);
             }
         });
-
-        // Force redraw for elements (if still needed)
         document.querySelectorAll('.link-button').forEach(button => {
             void button.offsetWidth;
         });
